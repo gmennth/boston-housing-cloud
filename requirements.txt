@@ -1,0 +1,7 @@
+-r api/requirements.txt
+-r ui/requirements.txt
+pytest
+httpx
+matplotlib
+seaborn
+jupyter
