@@ -1,0 +1,117 @@
+/* ===== Variables : palette bleu foncé / bleu clair / blanc ===== */
+:root {
+  --navy: #0b2545;
+  --blue: #1d5fa8;
+  --sky: #e6f1fc;
+  --sky-border: #b9d6f2;
+  --white: #ffffff;
+  --text: #17304f;
+  --danger: #c0392b;
+  --success: #1b7f5c;
+  --radius: 12px;
+  --shadow: 0 6px 20px rgba(11, 37, 69, 0.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--sky);
+  line-height: 1.5;
+}
+
+/* ===== En-tête ===== */
+.hero {
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  color: var(--white);
+  text-align: center;
+  padding: 3rem 1.25rem 4.5rem;
+}
+.hero h1 { margin: 0 0 .75rem; font-size: clamp(1.6rem, 4vw, 2.5rem); }
+.hero p  { max-width: 640px; margin: 0 auto; opacity: .92; }
+
+/* ===== Carte du formulaire (remonte sur l'en-tête) ===== */
+.container {
+  max-width: 900px;
+  margin: -2.5rem auto 2rem;
+  padding: 0 1rem;
+}
+form {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ===== Grille : 2 colonnes (ordinateur) ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem 1.5rem;
+}
+.field { display: flex; flex-direction: column; }
+.field label { font-weight: 600; font-size: .9rem; margin-bottom: .4rem; color: var(--navy); }
+
+input, select {
+  padding: .7rem .85rem;
+  font-size: 1rem;
+  border: 1.5px solid var(--sky-border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text);
+  transition: border-color .2s, box-shadow .2s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29, 95, 168, .2);
+}
+/* Classe ajoutée par script.js en cas d'erreur */
+.field.invalid input, .field.invalid select { border-color: var(--danger); }
+.error { color: var(--danger); min-height: 1.1rem; margin-top: .25rem; font-size: .8rem; }
+
+/* ===== Boutons ===== */
+.actions { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.btn {
+  padding: .8rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, background .2s;
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:focus-visible { outline: 3px solid var(--sky-border); outline-offset: 2px; }
+.btn:disabled { opacity: .6; cursor: wait; }
+.btn-primary { background: var(--navy); color: var(--white); }
+.btn-primary:hover:not(:disabled) { background: var(--blue); }
+.btn-secondary { background: var(--sky); color: var(--navy); border: 1.5px solid var(--sky-border); }
+
+/* ===== Zone de résultat ===== */
+.result {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  background: var(--white);
+  border-radius: 16px;
+  border-left: 6px solid var(--blue);
+  box-shadow: var(--shadow);
+}
+.result h2 { margin: 0 0 .5rem; font-size: 1.05rem; color: var(--navy); }
+.result p  { margin: 0; font-size: 1.1rem; }
+.result.success { border-left-color: var(--success); }
+.result.success p { font-size: 2.4rem; font-weight: 700; color: var(--navy); }
+.result.error-box { border-left-color: var(--danger); }
+.result.error-box h2 { color: var(--danger); }
+
+.footer { text-align: center; padding: 1.5rem 1rem 2rem; font-size: .85rem; opacity: .75; }
+
+/* ===== Téléphone : 1 colonne ===== */
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr; }
+  form { padding: 1.25rem; }
+  .btn { width: 100%; }
+}

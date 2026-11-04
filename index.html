@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boston Housing Price Prediction</title>
+  <!-- Lien vers la feuille de style -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- En-tête : titre + description du projet -->
+  <header class="hero">
+    <h1>Boston Housing Price Prediction</h1>
+    <p>Projet de Data Science : un modèle de Machine Learning entraîné sur la base Boston Housing
+       estime le prix médian d’un logement à partir de 13 caractéristiques du quartier.
+       Renseignez les champs puis lancez la prédiction.</p>
+  </header>
+
+  <main class="container">
+    <!-- novalidate : on désactive la validation du navigateur, c'est script.js qui valide -->
+    <form id="prediction-form" novalidate>
+      <div class="grid">
+
+        <div class="field">
+          <label for="CRIM">CRIM : taux de criminalité par habitant</label>
+          <input type="number" id="CRIM" name="CRIM" step="any" min="0" max="100" placeholder="ex : 0.00632">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="ZN">ZN : proportion de terrains résidentiels (%)</label>
+          <input type="number" id="ZN" name="ZN" step="any" min="0" max="100" placeholder="ex : 18">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="INDUS">INDUS : proportion de zones industrielles (%)</label>
+          <input type="number" id="INDUS" name="INDUS" step="any" min="0" max="30" placeholder="ex : 2.31">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="CHAS">CHAS : proximité de la rivière Charles</label>
+          <select id="CHAS" name="CHAS">
+            <option value="">Choisir…</option>
+            <option value="0">0 : hors de la rivière</option>
+            <option value="1">1 : en bordure de la rivière</option>
+          </select>
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="NOX">NOX : concentration d’oxydes d’azote (ppm)</label>
+          <input type="number" id="NOX" name="NOX" step="any" min="0.3" max="1" placeholder="ex : 0.538">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="RM">RM : nombre moyen de pièces par logement</label>
+          <input type="number" id="RM" name="RM" step="any" min="3" max="9" placeholder="ex : 6.575">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="AGE">AGE : proportion de logements anciens (%)</label>
+          <input type="number" id="AGE" name="AGE" step="any" min="0" max="100" placeholder="ex : 65.2">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="DIS">DIS : distance pondérée aux centres d’emploi</label>
+          <input type="number" id="DIS" name="DIS" step="any" min="1" max="13" placeholder="ex : 4.09">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="RAD">RAD : indice d’accessibilité aux autoroutes</label>
+          <input type="number" id="RAD" name="RAD" step="1" min="1" max="24" placeholder="ex : 4">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="TAX">TAX : taux de taxe foncière (pour 10 000 $)</label>
+          <input type="number" id="TAX" name="TAX" step="any" min="150" max="720" placeholder="ex : 296">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="PTRATIO">PTRATIO : ratio élèves / enseignant</label>
+          <input type="number" id="PTRATIO" name="PTRATIO" step="any" min="12" max="22.5" placeholder="ex : 15.3">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="B">B : indicateur démographique historique de la base</label>
+          <input type="number" id="B" name="B" step="any" min="0" max="400" placeholder="ex : 396.9">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="field">
+          <label for="LSTAT">LSTAT : % de population de statut socio-économique inférieur</label>
+          <input type="number" id="LSTAT" name="LSTAT" step="any" min="1" max="40" placeholder="ex : 4.98">
+          <small class="error" aria-live="polite"></small>
+        </div>
+
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="predict-btn" class="btn btn-primary">Prédire le prix</button>
+        <button type="button" id="reset-btn" class="btn btn-secondary">Réinitialiser</button>
+      </div>
+    </form>
+
+    <!-- Zone de résultat / message global : remplie uniquement par script.js -->
+    <section id="result" class="result" aria-live="polite" hidden>
+      <h2 id="result-title"></h2>
+      <p id="result-value"></p>
+    </section>
+  </main>
+
+  <footer class="footer">Projet de groupe Data Science · Interface web (HTML, CSS, JavaScript) wilfrid@media</footer>
+
+  <!-- Chargé en dernier pour que le HTML existe déjà quand le script s'exécute -->
+  <script src="script.js"></script>
+</body>
+</html>
