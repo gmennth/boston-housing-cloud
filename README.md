@@ -40,3 +40,7 @@ API : http://localhost:8000/docs - Interface : http://localhost:8501
 ## Lancer avec Docker
 
     docker compose up --build
+
+## Note éthique
+
+Le jeu Boston Housing contient la variable B, construite à partir de la proportion de population noire, et sa conception est critiquée comme discriminatoire. scikit-learn a retiré load_boston (version 1.2). Nous l'utilisons à des fins pédagogiques : ce modèle ne doit pas servir à des décisions réelles. Alternative moderne : California Housing.
