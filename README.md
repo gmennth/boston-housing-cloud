@@ -1,2 +1,46 @@
-# boston-housing-cloud
-Prédiction du prix des logements (Boston Housing) : modèle de régression scikit-learn exposé via une API REST FastAPI, interface Streamlit pour saisir les caractéristiques d'un bien, conteneurisation Docker et déploiement cloud. Projet de groupe du cours Cloud Computing, Docker et Déploiement, avec CI GitHub Actions
+# Boston Housing - Prédiction du prix des logements
+
+![CI](https://github.com/gmennth/boston-housing-cloud/actions/workflows/ci.yml/badge.svg)
+
+Projet Cloud Computing : prédire le prix médian d'un logement à Boston
+(régression), avec joblib, FastAPI, Streamlit, Docker et déploiement cloud.
+
+## Équipe et branches
+
+| Membre | Rôle | Branche |
+|---|---|---|
+| Nathan | Chef de projet, documentation, CI | nathan-docs-ci |
+| SATH | Données et EDA | sath-data-eda |
+| Jérémie | Machine Learning, joblib | jeremie-ml-model |
+| Gernis | API FastAPI + tests | gernis-api-fastapi |
+| Wilfried | Interface Streamlit | wilfried-streamlit-ui |
+| Ben | Docker et déploiement | ben-docker-deploy |
+
+## Architecture
+
+    data/boston.csv -> ml/train.py (Jérémie) -> models/model.pkl (joblib)
+                                                     |
+                                                     v
+                         api/main.py FastAPI + Uvicorn (Gernis) :8000
+                                                     ^
+                                                     | POST /predict (JSON)
+                         ui/streamlit_app.py Streamlit (Wilfried) :8501
+
+    Docker : 2 conteneurs + docker-compose (Ben) -> Cloud (Render + Streamlit Cloud)
+
+## Lancer en local
+
+    pip install -r requirements.txt
+    python ml/train.py
+    uvicorn api.main:app --reload --port 8000
+    streamlit run ui/streamlit_app.py
+
+API : http://localhost:8000/docs - Interface : http://localhost:8501
+
+## Lancer avec Docker
+
+    docker compose up --build
+
+## Note éthique
+
+Le jeu Boston Housing contient la variable B, construite à partir de la proportion de population noire, et sa conception est critiquée comme discriminatoire. scikit-learn a retiré load_boston (version 1.2). Nous l'utilisons à des fins pédagogiques : ce modèle ne doit pas servir à des décisions réelles. Alternative moderne : California Housing.
