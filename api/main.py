@@ -1,92 +1,64 @@
-from pathlib import Path
 import json
+from pathlib import Path
+
 import joblib
 import pandas as pd
-
 from fastapi import FastAPI
-from pydantic import BaseModel 
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
-# Chemin principal du projet
-ROOT = Path(__file__).resolve().parent.parent
+BASE = Path(__file__).resolve().parent.parent
+FEATURES = ["CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS", "RAD", "TAX", "PTRATIO", "B", "LSTAT"]
 
-# Liste des 13 variables utilisées par le modèle
-FEATURES = [
-    "CRIM", "ZN", "INDUS", "CHAS", "NOX",
-    "RM", "AGE", "DIS", "RAD", "TAX",
-    "PTRATIO", "B", "LSTAT"
-]
+# Chargement unique au démarrage : le pipeline (imputation + scaler + modèle) et les fichiers annexes
+model = joblib.load(BASE / "models" / "model.pkl")
+metrics = json.loads((BASE / "models" / "metrics.json").read_text(encoding="utf-8"))
+ranges = json.loads((BASE / "models" / "feature_ranges.json").read_text(encoding="utf-8"))
 
-# Chemins des fichiers du modèle
-MODEL_PATH = ROOT / "models" / "model.pkl"
-METRICS_PATH = ROOT / "models" / "metrics.json"
-RANGES_PATH = ROOT / "models" / "feature_ranges.json"
 
-# Charger le modèle de Machine Learning
-model = joblib.load(MODEL_PATH)
+class HouseFeatures(BaseModel):
+    CRIM: float = Field(..., ge=0, description="Criminalité par habitant")
+    ZN: float = Field(..., ge=0, le=100, description="% de grands terrains résidentiels")
+    INDUS: float = Field(..., ge=0, le=100, description="% de surfaces non commerciales")
+    CHAS: int = Field(..., ge=0, le=1, description="1 si borde la rivière Charles")
+    NOX: float = Field(..., gt=0, description="Concentration d'oxydes d'azote")
+    RM: float = Field(..., gt=0, description="Nombre moyen de pièces")
+    AGE: float = Field(..., ge=0, le=100, description="% de logements anciens")
+    DIS: float = Field(..., gt=0, description="Distance aux centres d'emploi")
+    RAD: int = Field(..., ge=1, description="Accès aux autoroutes")
+    TAX: float = Field(..., gt=0, description="Taux d'impôt foncier")
+    PTRATIO: float = Field(..., gt=0, description="Ratio élèves / enseignants")
+    B: float = Field(..., ge=0, description="Indicateur démographique")
+    LSTAT: float = Field(..., ge=0, le=100, description="% de population à faible statut")
 
-# Charger les performances du modèle
-metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
 
-# Charger les plages de valeurs des variables
-feature_ranges = json.loads(RANGES_PATH.read_text(encoding="utf-8"))
-
-# Création de l'application FastAPI
 app = FastAPI(
-    title="Boston Housing API",
-    description="API de prédiction des prix des maisons",
-    version="1.0.0"
+    title="Boston House Price API",
+    version="1.0.0",
+    description="Prédit le prix médian d'un logement à Boston (en milliers de $).",
 )
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-# Vérifier si l'API fonctionne
+
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-        "message": "L'API fonctionne correctement"
-    }
+    return {"status": "ok"}
 
-# Afficher les informations du modèle
+
 @app.get("/model-info")
 def model_info():
-    return {
-        "best_model": metrics["best_model"],
-        "metrics": metrics["metrics"],
-        "all_models": metrics["all_models"],
-        "importance": metrics["importance"],
-        "feature_ranges": feature_ranges
-    }
+    return {**metrics, "feature_ranges": ranges}
 
-# Structure des données reçues pour une prédiction
-class HouseFeatures(BaseModel):
-    CRIM: float
-    ZN: float
-    INDUS: float
-    CHAS: float
-    NOX: float
-    RM: float
-    AGE: float
-    DIS: float
-    RAD: float
-    TAX: float
-    PTRATIO: float
-    B: float
-    LSTAT: float
 
-# Effectuer une prédiction du prix d'une maison
 @app.post("/predict")
-def predict(house: HouseFeatures):
-
-    # Transformer les données reçues en DataFrame
-    data = pd.DataFrame(
-        [[getattr(house, feature) for feature in FEATURES]],
-        columns=FEATURES
-    )
-
-    # Effectuer la prédiction avec le modèle
-    prediction = model.predict(data)[0]
-
-    # Retourner le résultat
+def predict(features: HouseFeatures):
+    # Les 13 colonnes, dans l'ordre du contrat d'interface
+    X = pd.DataFrame([features.model_dump()])[FEATURES]
+    y = float(model.predict(X)[0])
+    rmse = metrics["metrics"]["rmse"]
     return {
-        "predicted_price": round(float(prediction), 2),
-        "unit": "thousands of dollars"
+        "prediction_k_usd": round(y, 2),
+        "prediction_usd": int(round(y * 1000)),
+        "range_k_usd": [round(y - rmse, 2), round(y + rmse, 2)],
+        "model": metrics["best_model"],
     }
