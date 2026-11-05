@@ -15,3 +15,15 @@ Projet Cloud Computing : prédire le prix médian d'un logement à Boston
 | Gernis | API FastAPI + tests | gernis-api-fastapi |
 | Wilfried | Interface Streamlit | wilfried-streamlit-ui |
 | Ben | Docker et déploiement | ben-docker-deploy |
+
+## Architecture
+
+    data/boston.csv -> ml/train.py (Jérémie) -> models/model.pkl (joblib)
+                                                     |
+                                                     v
+                         api/main.py FastAPI + Uvicorn (Gernis) :8000
+                                                     ^
+                                                     | POST /predict (JSON)
+                         ui/streamlit_app.py Streamlit (Wilfried) :8501
+
+    Docker : 2 conteneurs + docker-compose (Ben) -> Cloud (Render + Streamlit Cloud)
