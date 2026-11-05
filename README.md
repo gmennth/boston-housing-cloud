@@ -27,3 +27,16 @@ Projet Cloud Computing : prédire le prix médian d'un logement à Boston
                          ui/streamlit_app.py Streamlit (Wilfried) :8501
 
     Docker : 2 conteneurs + docker-compose (Ben) -> Cloud (Render + Streamlit Cloud)
+
+## Lancer en local
+
+    pip install -r requirements.txt
+    python ml/train.py
+    uvicorn api.main:app --reload --port 8000
+    streamlit run ui/streamlit_app.py
+
+API : http://localhost:8000/docs - Interface : http://localhost:8501
+
+## Lancer avec Docker
+
+    docker compose up --build
