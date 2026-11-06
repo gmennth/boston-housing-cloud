@@ -37,7 +37,12 @@ app = FastAPI(
     version="1.0.0",
     description="Prédit le prix médian d'un logement à Boston (en milliers de $).",
 )
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
